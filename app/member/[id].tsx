@@ -26,35 +26,69 @@ export default function MemberDetails() {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        <View style={styles.profileHeader}>
+        <View style={styles.header}>
           <View style={styles.profilePicture}>
             <Ionicons name="person" size={60} color="#ccc" />
           </View>
           <Text style={styles.name}>{member.name}</Text>
           <Text style={styles.relation}>{member.relation}</Text>
-          <View style={styles.statusContainer}>
-            <Text style={[
-              styles.statusText,
-              member.healthStatus === 'stable' ? styles.statusStable : styles.statusPending
-            ]}>
-              Health Status: {member.healthStatus.toUpperCase()}
-            </Text>
-          </View>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Personal Information</Text>
           <View style={styles.infoItem}>
-            <Text style={styles.label}>Age</Text>
-            <Text style={styles.value}>{member.age}</Text>
+            <Text style={styles.label}>Full Name</Text>
+            <Text style={styles.value}>{member.name}</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.label}>Relation</Text>
+            <Text style={styles.value}>{member.relation}</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.label}>Phone</Text>
+            <Text style={styles.value}>+974 5555-5555</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.label}>Gender</Text>
+            <Text style={styles.value}>Female</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.label}>Date of Birth</Text>
+            <Text style={styles.value}>15/03/1988</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.label}>Nationality</Text>
+            <Text style={styles.value}>Qatar</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.label}>ID Number</Text>
+            <Text style={styles.value}>987654321</Text>
           </View>
           <View style={styles.infoItem}>
             <Text style={styles.label}>Blood Type</Text>
             <Text style={styles.value}>{member.bloodType}</Text>
           </View>
-          <View style={styles.infoItem}>
-            <Text style={styles.label}>Emergency Contact</Text>
-            <Text style={styles.value}>{member.emergencyContact}</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Health Status</Text>
+          <View style={styles.statusContainer}>
+            <View style={[
+              styles.statusBadge,
+              member.healthStatus === 'stable' ? styles.statusStableBg : styles.statusPendingBg
+            ]}>
+              <Ionicons 
+                name={member.healthStatus === 'stable' ? "checkmark-circle" : "warning"} 
+                size={24} 
+                color="white" 
+              />
+              <Text style={styles.statusText}>
+                {member.healthStatus.toUpperCase()}
+              </Text>
+            </View>
+            <Text style={styles.lastUpdated}>
+              Last updated: {new Date().toLocaleTimeString()}
+            </Text>
           </View>
         </View>
 
@@ -96,10 +130,12 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  profileHeader: {
+  header: {
     backgroundColor: "white",
-    padding: 20,
     alignItems: "center",
+    paddingVertical: 30,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f0f0f0",
   },
   profilePicture: {
     width: 120,
@@ -114,29 +150,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "600",
     color: "#333",
+    marginBottom: 4,
   },
   relation: {
     fontSize: 16,
     color: "#666",
-    marginTop: 4,
-  },
-  statusContainer: {
-    marginTop: 12,
-  },
-  statusText: {
-    fontSize: 14,
-    fontWeight: "600",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-  },
-  statusStable: {
-    backgroundColor: "#E8F5E9",
-    color: "#2E7D32",
-  },
-  statusPending: {
-    backgroundColor: "#FFF3E0",
-    color: "#EF6C00",
   },
   section: {
     backgroundColor: "white",
@@ -152,7 +170,7 @@ const styles = StyleSheet.create({
   infoItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: "#f0f0f0",
   },
@@ -176,5 +194,33 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+  },
+  statusContainer: {
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 25,
+    gap: 8,
+  },
+  statusStableBg: {
+    backgroundColor: "#4CAF50",
+  },
+  statusPendingBg: {
+    backgroundColor: "#FF9800",
+  },
+  statusText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'white',
+  },
+  lastUpdated: {
+    marginTop: 8,
+    fontSize: 14,
+    color: '#666',
   },
 }); 
