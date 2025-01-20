@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, TextInput, Pressable, FlatList } from "react-native";
-import { useState } from "react";
+import { View, Text, StyleSheet, TextInput, Pressable, FlatList, KeyboardAvoidingView, Platform, ActivityIndicator } from "react-native";
+import { useState, useRef } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
 interface Message {
@@ -20,8 +20,10 @@ const initialMessages: Message[] = [
 ];
 
 export default function EmergencyChat() {
+  const flatListRef = useRef<FlatList>(null);
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [newMessage, setNewMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const sendMessage = () => {
     if (newMessage.trim()) {
@@ -50,14 +52,24 @@ export default function EmergencyChat() {
     </View>
   );
 
+  const scrollToBottom = () => {
+    flatListRef.current?.scrollToEnd({ animated: true });
+  };
+
   return (
-    <View style={styles.container}>
-      <FlatList<Message>
+    <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 20}
+    >
+      <FlatList
+        ref={flatListRef}
         data={messages}
         renderItem={renderMessage}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         contentContainerStyle={styles.messagesList}
-        inverted={false}
+        onContentSizeChange={scrollToBottom}
+        onLayout={scrollToBottom}
       />
       
       <View style={styles.inputContainer}>
@@ -67,12 +79,19 @@ export default function EmergencyChat() {
           onChangeText={setNewMessage}
           placeholder="Type your message..."
           multiline
+          onFocus={scrollToBottom}
         />
-        <Pressable style={styles.sendButton} onPress={sendMessage}>
-          <Ionicons name="send" size={24} color="white" />
-        </Pressable>
+        {isLoading ? (
+          <View style={styles.sendButton}>
+            <ActivityIndicator color="#fff" />
+          </View>
+        ) : (
+          <Pressable style={styles.sendButton} onPress={sendMessage}>
+            <Ionicons name="send" size={24} color="white" />
+          </Pressable>
+        )}
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

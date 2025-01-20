@@ -3,6 +3,34 @@ import { router, Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function Profile() {
+  const isGuest = false; // This should come from your auth state management
+
+  if (isGuest) {
+    return (
+      <View style={styles.guestContainer}>
+        <View style={styles.guestContent}>
+          <Ionicons name="person-circle-outline" size={80} color="#ccc" />
+          <Text style={styles.guestTitle}>Welcome, Guest!</Text>
+          <Text style={styles.guestMessage}>
+            Sign in or create an account to access all features
+          </Text>
+          <Pressable 
+            style={[styles.button, styles.loginButton]} 
+            onPress={() => router.push("/onboarding/login")}
+          >
+            <Text style={styles.buttonText}>Login</Text>
+          </Pressable>
+          <Pressable 
+            style={[styles.button, styles.registerButton]} 
+            onPress={() => router.push("/onboarding/register")}
+          >
+            <Text style={[styles.buttonText, styles.registerButtonText]}>Register</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -140,5 +168,62 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     fontSize: 16,
     color: "#333",
+  },
+  guestContainer: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+    justifyContent: "center",
+    padding: 20,
+  },
+  guestContent: {
+    alignItems: "center",
+    backgroundColor: "white",
+    padding: 30,
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  guestTitle: {
+    fontSize: 24,
+    fontWeight: "600",
+    color: "#333",
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  guestMessage: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 30,
+    lineHeight: 22,
+  },
+  button: {
+    width: "100%",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  loginButton: {
+    backgroundColor: "#007AFF",
+  },
+  registerButton: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#007AFF",
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "white",
+  },
+  registerButtonText: {
+    color: "#007AFF",
   },
 }); 
