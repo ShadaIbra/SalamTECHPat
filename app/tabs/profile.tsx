@@ -3,10 +3,6 @@ import { router, Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function Profile() {
-  const handleLogout = () => {
-    router.replace("/onboarding/login");
-  };
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.section}>
@@ -41,14 +37,10 @@ export default function Profile() {
         </Pressable>
       </Link>
 
-      <Pressable style={styles.menuItem}>
+      <Pressable style={styles.menuItem} onPress={() => router.push("/settings")}>
         <Ionicons name="settings" size={24} color="#007AFF" />
         <Text style={styles.menuItemText}>Settings</Text>
         <Ionicons name="chevron-forward" size={24} color="#666" />
-      </Pressable>
-
-      <Pressable style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Logout</Text>
       </Pressable>
     </ScrollView>
   );
@@ -97,17 +89,5 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     fontSize: 16,
     color: "#333",
-  },
-  logoutButton: {
-    margin: 20,
-    backgroundColor: "#ff3b30",
-    padding: 15,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  logoutText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "600",
   },
 }); 

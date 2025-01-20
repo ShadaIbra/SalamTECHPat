@@ -33,6 +33,41 @@ export default function RootLayout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen 
+        name="settings" 
+        options={{
+          headerShown: true,
+          title: "Settings",
+          headerStyle: {
+            backgroundColor: "#fff",
+          },
+          headerTintColor: "#000",
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 20,
+          },
+          headerTitleAlign: "center",
+          contentStyle: {
+            paddingTop: 10,
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="tabs/members" 
+        options={{
+          headerShown: true,
+          title: "Manage Members",
+          headerStyle: {
+            backgroundColor: "#fff",
+          },
+          headerTintColor: "#000",
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 20,
+          },
+          headerTitleAlign: "center",
+        }}
+      />
     </Stack>
   );
 }
