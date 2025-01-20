@@ -25,18 +25,11 @@ export default function MemberDetails() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable 
-          style={styles.backButton} 
-          onPress={() => router.back()}
-        >
-          <Ionicons name="arrow-back" size={24} color="#007AFF" />
-          <Text style={styles.backText}>Back</Text>
-        </Pressable>
-      </View>
-
       <ScrollView style={styles.scrollView}>
         <View style={styles.profileHeader}>
+          <View style={styles.profilePicture}>
+            <Ionicons name="person" size={60} color="#ccc" />
+          </View>
           <Text style={styles.name}>{member.name}</Text>
           <Text style={styles.relation}>{member.relation}</Text>
           <View style={styles.statusContainer}>
@@ -100,21 +93,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
   },
-  header: {
-    backgroundColor: "white",
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  backButton: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  backText: {
-    marginLeft: 8,
-    fontSize: 16,
-    color: "#007AFF",
-  },
   scrollView: {
     flex: 1,
   },
@@ -122,6 +100,15 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
     alignItems: "center",
+  },
+  profilePicture: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
   },
   name: {
     fontSize: 24,

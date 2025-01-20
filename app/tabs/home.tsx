@@ -9,7 +9,7 @@ export default function Home() {
   };
 
   const handleVolunteer = () => {
-    router.push("/tabs/volunteer" as any);
+    router.push("/volunteer");
   };
 
   return (

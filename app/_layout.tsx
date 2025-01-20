@@ -19,18 +19,30 @@ export default function RootLayout() {
           headerShown: true,
           title: "Volunteer",
           headerStyle: {
-            backgroundColor: "#007AFF",
+            backgroundColor: "#fff",
           },
-          headerTintColor: "#fff",
+          headerTintColor: "#000",
           headerTitleStyle: {
             fontWeight: "bold",
+            fontSize: 20,
           },
+          headerTitleAlign: "center",
         }}
       />
       <Stack.Screen 
         name="member/[id]" 
         options={{
-          headerShown: false,
+          headerShown: true,
+          title: "Member Details",
+          headerStyle: {
+            backgroundColor: "#fff",
+          },
+          headerTintColor: "#000",
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 20,
+          },
+          headerTitleAlign: "center",
         }}
       />
       <Stack.Screen 
