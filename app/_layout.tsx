@@ -78,6 +78,9 @@ export default function RootLayout() {
             fontSize: 20,
           },
           headerTitleAlign: "center",
+          contentStyle: {
+            paddingTop: 30,
+          },
         }}
       />
     </Stack>
