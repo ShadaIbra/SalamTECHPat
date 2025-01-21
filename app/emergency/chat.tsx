@@ -14,7 +14,7 @@ interface Message {
 const initialMessages: Message[] = [
   {
     id: '1',
-    text: 'Emergency services have been notified. An operator will join the chat shortly. Please stay calm and provide any additional details about your situation.',
+    text: 'Emergency services have been notified.',
     sender: 'ai',
     timestamp: new Date(),
   }
@@ -29,7 +29,6 @@ export default function EmergencyChat() {
   const sendMessage = async () => {
     if (!newMessage.trim()) return;
 
-    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       text: newMessage,
@@ -46,7 +45,7 @@ export default function EmergencyChat() {
         messages: [
           {
             role: 'system',
-            content: 'You are an emergency response assistant. Provide clear, concise, and helpful guidance for emergency situations.',
+            content: 'You are a concise emergency response assistant. Provide brief, clear answers in 1-2 sentences. Be direct and helpful.',
           },
           {
             role: 'user',
@@ -54,6 +53,8 @@ export default function EmergencyChat() {
           },
         ],
         model: 'gpt-3.5-turbo',
+        max_tokens: 30,  // Limit response length
+        temperature: 0.5, // Make responses more focused/deterministic
       });
 
       const aiMessage: Message = {

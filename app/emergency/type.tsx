@@ -23,7 +23,7 @@ export default function EmergencyType() {
 
   const handleContinue = () => {
     if (selectedType || otherText) {
-      router.push("/emergency/chat");
+      router.push("/emergency/recipient");
     }
   };
 
