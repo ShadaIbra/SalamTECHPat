@@ -18,7 +18,6 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back</Text>
       
       <View style={styles.inputContainer}>
         <TextInput
