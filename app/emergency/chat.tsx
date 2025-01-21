@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet, TextInput, Pressable, FlatList, KeyboardAvoidingView, Platform, ActivityIndicator } from "react-native";
 import { useState, useRef } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { openai } from '../utils/openai';
 
 interface Message {
   id: string;
   text: string;
-  sender: 'user' | 'system';
+  sender: 'user' | 'ai';
   timestamp: Date;
 }
 
@@ -14,7 +15,7 @@ const initialMessages: Message[] = [
   {
     id: '1',
     text: 'Emergency services have been notified. An operator will join the chat shortly. Please stay calm and provide any additional details about your situation.',
-    sender: 'system',
+    sender: 'ai',
     timestamp: new Date(),
   }
 ];
@@ -25,28 +26,73 @@ export default function EmergencyChat() {
   const [newMessage, setNewMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const sendMessage = () => {
-    if (newMessage.trim()) {
-      setMessages([
-        ...messages,
-        {
-          id: Date.now().toString(),
-          text: newMessage.trim(),
-          sender: 'user',
-          timestamp: new Date(),
-        }
-      ]);
-      setNewMessage('');
+  const sendMessage = async () => {
+    if (!newMessage.trim()) return;
+
+    // Add user message
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: newMessage,
+      sender: 'user',
+      timestamp: new Date(),
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setNewMessage('');
+    setIsLoading(true);
+
+    try {
+      const response = await openai.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an emergency response assistant. Provide clear, concise, and helpful guidance for emergency situations.',
+          },
+          {
+            role: 'user',
+            content: newMessage,
+          },
+        ],
+        model: 'gpt-3.5-turbo',
+      });
+
+      const aiMessage: Message = {
+        id: Date.now().toString(),
+        text: response.choices[0].message.content || 'Sorry, I could not process that.',
+        sender: 'ai',
+        timestamp: new Date(),
+      };
+
+      setMessages(prev => [...prev, aiMessage]);
+    } catch (error) {
+      console.error('OpenAI API Error:', error);
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        text: 'Sorry, I encountered an error. Please try again.',
+        sender: 'ai',
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const renderMessage = ({ item }: { item: Message }) => (
     <View style={[
       styles.messageContainer,
-      item.sender === 'user' ? styles.userMessage : styles.systemMessage
+      item.sender === 'user' ? styles.userMessage : styles.aiMessage
     ]}>
-      <Text style={styles.messageText}>{item.text}</Text>
-      <Text style={styles.timestamp}>
+      <Text style={[
+        styles.messageText,
+        item.sender === 'user' ? styles.userMessageText : styles.aiMessageText
+      ]}>
+        {item.text}
+      </Text>
+      <Text style={[
+        styles.timestamp,
+        item.sender === 'user' ? styles.userTimestamp : styles.aiTimestamp
+      ]}>
         {item.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
       </Text>
     </View>
@@ -109,25 +155,37 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginBottom: 8,
   },
-  systemMessage: {
-    backgroundColor: "#FF3B30",
-    alignSelf: 'flex-start',
-    borderTopLeftRadius: 4,
-  },
   userMessage: {
     backgroundColor: "#007AFF",
     alignSelf: 'flex-end',
     borderTopRightRadius: 4,
   },
+  aiMessage: {
+    backgroundColor: "#E5E5EA",
+    alignSelf: 'flex-start',
+    borderTopLeftRadius: 4,
+  },
   messageText: {
     color: "white",
     fontSize: 16,
+  },
+  userMessageText: {
+    color: "#fff",
+  },
+  aiMessageText: {
+    color: "#000",
   },
   timestamp: {
     color: "rgba(255,255,255,0.7)",
     fontSize: 12,
     marginTop: 4,
     alignSelf: 'flex-end',
+  },
+  userTimestamp: {
+    color: "rgba(255, 255, 255, 0.7)",
+  },
+  aiTimestamp: {
+    color: "rgba(0, 0, 0, 0.5)",
   },
   inputContainer: {
     flexDirection: "row",
