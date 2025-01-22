@@ -2,10 +2,48 @@ import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
 import { router, Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useUser } from '../utils/userContext';
+import { useState, useEffect } from "react";
+import { getAuth } from 'firebase/auth';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 
 export default function Profile() {
   const { userType } = useUser();
+  const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const isGuest = userType === 'guest';
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (userType === 'registered') {
+        const auth = getAuth();
+        const db = getFirestore();
+        
+        if (auth.currentUser) {
+          try {
+            const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+            if (userDoc.exists()) {
+              setUserData({
+                firstName: userDoc.data().firstName || '',
+                lastName: userDoc.data().lastName || '',
+                email: userDoc.data().email || '',
+                phone: userDoc.data().phone || '',
+                dateOfBirth: userDoc.data().dateOfBirth || '',
+                gender: userDoc.data().gender || '',
+                nationality: userDoc.data().nationality || '',
+                idNumber: userDoc.data().idNumber || '',
+                bloodType: userDoc.data().bloodType || '',
+              });
+            }
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+          }
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchUserData();
+  }, [userType]);
 
   if (isGuest) {
     return (
@@ -33,49 +71,53 @@ export default function Profile() {
     );
   }
 
+  if (loading) {
+    return <View style={styles.container}><Text>Loading...</Text></View>;
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.profilePicture}>
           <Ionicons name="person" size={60} color="#ccc" />
         </View>
-        <Text style={styles.name}>John Doe</Text>
-        <Text style={styles.email}>john.doe@example.com</Text>
+        <Text style={styles.name}>{userData?.firstName} {userData?.lastName}</Text>
+        <Text style={styles.email}>{userData?.email}</Text>
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Personal Information</Text>
         <View style={styles.infoItem}>
           <Text style={styles.label}>Full Name</Text>
-          <Text style={styles.value}>John Doe</Text>
+          <Text style={styles.value}>{`${userData?.firstName || ''} ${userData?.lastName || ''}`}</Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.label}>Email</Text>
-          <Text style={styles.value}>john.doe@example.com</Text>
+          <Text style={styles.value}>{userData?.email || ''}</Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.label}>Phone</Text>
-          <Text style={styles.value}>+974 1234 5678</Text>
-        </View>
-        <View style={styles.infoItem}>
-          <Text style={styles.label}>Gender</Text>
-          <Text style={styles.value}>Male</Text>
+          <Text style={styles.value}>{userData?.phone || ''}</Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.label}>Date of Birth</Text>
-          <Text style={styles.value}>01/01/1990</Text>
+          <Text style={styles.value}>{userData?.dateOfBirth || ''}</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.label}>Gender</Text>
+          <Text style={styles.value}>{userData?.gender || ''}</Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.label}>Nationality</Text>
-          <Text style={styles.value}>Qatar</Text>
+          <Text style={styles.value}>{userData?.nationality || ''}</Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.label}>ID Number</Text>
-          <Text style={styles.value}>123456789</Text>
+          <Text style={styles.value}>{userData?.idNumber || ''}</Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.label}>Blood Type</Text>
-          <Text style={styles.value}>O+</Text>
+          <Text style={styles.value}>{userData?.bloodType || ''}</Text>
         </View>
       </View>
 

@@ -32,7 +32,7 @@ export default function Register() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Save additional user data to Firestore
+      // Save all user data to Firestore
       await setDoc(doc(db, "users", user.uid), {
         firstName,
         lastName,
@@ -40,6 +40,11 @@ export default function Register() {
         phone,
         email,
         createdAt: new Date().toISOString(),
+        // Initialize other profile fields as empty
+        gender: "",
+        nationality: "",
+        idNumber: "",
+        bloodType: "",
       });
 
       setUserType('registered');
@@ -57,7 +62,6 @@ export default function Register() {
         <TextInput
           style={styles.input}
           placeholder="First Name"
-          placeholderTextColor="#999999"
           value={firstName}
           onChangeText={setFirstName}
           autoCapitalize="words"
@@ -65,7 +69,6 @@ export default function Register() {
         <TextInput
           style={styles.input}
           placeholder="Last Name"
-          placeholderTextColor="#999999"
           value={lastName}
           onChangeText={setLastName}
           autoCapitalize="words"
@@ -76,7 +79,6 @@ export default function Register() {
           <TextInput
             style={[styles.dateInput, styles.dayMonth]}
             placeholder="DD"
-            placeholderTextColor="#999999"
             value={day}
             onChangeText={setDay}
             keyboardType="number-pad"
@@ -85,7 +87,6 @@ export default function Register() {
           <TextInput
             style={[styles.dateInput, styles.dayMonth]}
             placeholder="MM"
-            placeholderTextColor="#999999"
             value={month}
             onChangeText={setMonth}
             keyboardType="number-pad"
@@ -94,7 +95,6 @@ export default function Register() {
           <TextInput
             style={[styles.dateInput, styles.year]}
             placeholder="YYYY"
-            placeholderTextColor="#999999"
             value={year}
             onChangeText={setYear}
             keyboardType="number-pad"
@@ -105,7 +105,6 @@ export default function Register() {
         <TextInput
           style={styles.input}
           placeholder="Phone Number"
-          placeholderTextColor="#999999"
           value={phone}
           onChangeText={setPhone}
           keyboardType="phone-pad"
@@ -113,7 +112,6 @@ export default function Register() {
         <TextInput
           style={styles.input}
           placeholder="Email"
-          placeholderTextColor="#999999"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -122,7 +120,6 @@ export default function Register() {
         <TextInput
           style={styles.input}
           placeholder="Password"
-          placeholderTextColor="#999999"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
