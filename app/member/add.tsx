@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { View, Text, StyleSheet, TextInput, ScrollView, Pressable } from "react-native";
+import { View, Text, StyleSheet, TextInput, ScrollView, Pressable, Alert } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { getAuth } from 'firebase/auth';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
 
 export default function AddMember() {
   const [formData, setFormData] = useState({
@@ -15,10 +17,43 @@ export default function AddMember() {
     bloodType: '',
   });
 
-  const handleSubmit = () => {
-    // Here you would typically send the data to your backend
-    console.log(formData);
-    router.back();
+  const handleSubmit = async () => {
+    // Basic validation
+    if (!formData.name || !formData.relation) {
+      Alert.alert("Error", "Name and relation are required");
+      return;
+    }
+
+    try {
+      const auth = getAuth();
+      const db = getFirestore();
+      
+      if (!auth.currentUser) {
+        Alert.alert("Error", "You must be logged in to add members");
+        return;
+      }
+
+      // Add member to Firestore
+      const memberRef = collection(db, `users/${auth.currentUser.uid}/members`);
+      await addDoc(memberRef, {
+        ...formData,
+        createdAt: new Date().toISOString(),
+      });
+
+      Alert.alert(
+        "Success",
+        "Member added successfully",
+        [
+          {
+            text: "OK",
+            onPress: () => router.back()
+          }
+        ]
+      );
+    } catch (error: any) {
+      console.error("Error adding member:", error);
+      Alert.alert("Error", "Failed to add member. Please try again.");
+    }
   };
 
   return (

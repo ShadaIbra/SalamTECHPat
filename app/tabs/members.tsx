@@ -1,65 +1,63 @@
-import { View, Text, StyleSheet, Pressable, FlatList } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-
-// Dummy data for the member list
-interface Member {
-  id: string;
-  name: string;
-  relation: string;
-  healthStatus: 'pending' | 'stable';
-}
-
-const dummyMembers: Member[] = [
-  { id: '1', name: 'Sarah Smith', relation: 'Spouse', healthStatus: 'stable' },
-  { id: '2', name: 'Alex Smith', relation: 'Child', healthStatus: 'pending' },
-];
+import { useState, useEffect } from "react";
+import { getAuth } from 'firebase/auth';
+import { getFirestore, collection, query, getDocs } from 'firebase/firestore';
 
 export default function Members() {
-  const handleMemberPress = (memberId: string) => {
-    router.push(`/member/${memberId}`);
-  };
+  const [members, setMembers] = useState<any[]>([]);
 
-  const renderItem = ({ item }: { item: Member }) => (
-    <Pressable 
-      style={styles.memberItem}
-      onPress={() => handleMemberPress(item.id)}
-    >
-      <View style={styles.memberInfo}>
-        <Text style={styles.memberName}>{item.name}</Text>
-        <Text style={styles.memberRelation}>{item.relation}</Text>
-      </View>
-      <View style={styles.statusContainer}>
-        <Text style={[
-          styles.statusText,
-          item.healthStatus === 'stable' ? styles.statusStable : styles.statusPending
-        ]}>
-          {item.healthStatus.toUpperCase()}
-        </Text>
-        <Ionicons name="chevron-forward" size={24} color="#666" />
-      </View>
-    </Pressable>
-  );
+  useEffect(() => {
+    const fetchMembers = async () => {
+      const auth = getAuth();
+      const db = getFirestore();
+      
+      if (auth.currentUser) {
+        try {
+          const membersRef = collection(db, `users/${auth.currentUser.uid}/members`);
+          const q = query(membersRef);
+          const querySnapshot = await getDocs(q);
+          
+          const membersList = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          
+          setMembers(membersList);
+        } catch (error) {
+          console.error("Error fetching members:", error);
+        }
+      }
+    };
+
+    fetchMembers();
+  }, []);
 
   return (
     <View style={styles.container}>
+      <ScrollView>
+        {members.map((member) => (
+          <Pressable 
+            key={member.id}
+            style={styles.memberCard}
+            onPress={() => router.push(`/member/${member.id}`)}
+          >
+            <View style={styles.memberInfo}>
+              <Text style={styles.memberName}>{member.name}</Text>
+              <Text style={styles.memberRelation}>{member.relation}</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={24} color="#666" />
+          </Pressable>
+        ))}
+      </ScrollView>
+
       <Pressable 
-        style={styles.addMemberButton}
+        style={styles.addButton}
         onPress={() => router.push("/member/add")}
       >
-        <Ionicons name="add-circle" size={24} color="#007AFF" />
-        <Text style={styles.addMemberText}>Add New Member</Text>
+        <Text style={styles.addButtonText}>Add Member</Text>
       </Pressable>
-
-      <FlatList
-        data={dummyMembers}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        ListEmptyComponent={() => (
-          <Text style={styles.emptyText}>No members added yet</Text>
-        )}
-      />
     </View>
   );
 }
@@ -68,68 +66,47 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
+    padding: 20,
   },
-  addMemberButton: {
+  memberCard: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "white",
     padding: 15,
-    marginBottom: 20,
-  },
-  addMemberText: {
-    marginLeft: 10,
-    fontSize: 16,
-    color: "#007AFF",
-    fontWeight: "500",
-  },
-  memberItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-    padding: 15,
-    justifyContent: "space-between",
+    borderRadius: 10,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   memberInfo: {
     flex: 1,
   },
   memberName: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: "600",
     color: "#333",
-    fontWeight: "500",
+    marginBottom: 4,
   },
   memberRelation: {
     fontSize: 14,
     color: "#666",
-    marginTop: 4,
   },
-  statusContainer: {
-    flexDirection: "row",
+  addButton: {
+    backgroundColor: "#007AFF",
+    padding: 15,
+    borderRadius: 10,
     alignItems: "center",
-    gap: 8,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: "600",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  statusStable: {
-    backgroundColor: "#E8F5E9",
-    color: "#2E7D32",
-  },
-  statusPending: {
-    backgroundColor: "#FFF3E0",
-    color: "#EF6C00",
-  },
-  separator: {
-    height: 1,
-    backgroundColor: "#f0f0f0",
-  },
-  emptyText: {
-    textAlign: "center",
-    color: "#666",
-    fontSize: 16,
     marginTop: 20,
+  },
+  addButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
   },
 }); 
