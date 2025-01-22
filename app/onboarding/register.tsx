@@ -57,6 +57,7 @@ export default function Register() {
         <TextInput
           style={styles.input}
           placeholder="First Name"
+          placeholderTextColor="#999999"
           value={firstName}
           onChangeText={setFirstName}
           autoCapitalize="words"
@@ -64,6 +65,7 @@ export default function Register() {
         <TextInput
           style={styles.input}
           placeholder="Last Name"
+          placeholderTextColor="#999999"
           value={lastName}
           onChangeText={setLastName}
           autoCapitalize="words"
@@ -74,6 +76,7 @@ export default function Register() {
           <TextInput
             style={[styles.dateInput, styles.dayMonth]}
             placeholder="DD"
+            placeholderTextColor="#999999"
             value={day}
             onChangeText={setDay}
             keyboardType="number-pad"
@@ -82,6 +85,7 @@ export default function Register() {
           <TextInput
             style={[styles.dateInput, styles.dayMonth]}
             placeholder="MM"
+            placeholderTextColor="#999999"
             value={month}
             onChangeText={setMonth}
             keyboardType="number-pad"
@@ -90,6 +94,7 @@ export default function Register() {
           <TextInput
             style={[styles.dateInput, styles.year]}
             placeholder="YYYY"
+            placeholderTextColor="#999999"
             value={year}
             onChangeText={setYear}
             keyboardType="number-pad"
@@ -100,6 +105,7 @@ export default function Register() {
         <TextInput
           style={styles.input}
           placeholder="Phone Number"
+          placeholderTextColor="#999999"
           value={phone}
           onChangeText={setPhone}
           keyboardType="phone-pad"
@@ -107,6 +113,7 @@ export default function Register() {
         <TextInput
           style={styles.input}
           placeholder="Email"
+          placeholderTextColor="#999999"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -115,6 +122,7 @@ export default function Register() {
         <TextInput
           style={styles.input}
           placeholder="Password"
+          placeholderTextColor="#999999"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
