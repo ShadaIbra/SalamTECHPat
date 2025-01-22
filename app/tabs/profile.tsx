@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Pressable, ScrollView, ActivityIndicator } from "react-native";
 import { router, Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useUser } from '../utils/userContext';
@@ -71,53 +71,69 @@ export default function Profile() {
     );
   }
 
-  if (loading) {
-    return <View style={styles.container}><Text>Loading...</Text></View>;
-  }
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.profilePicture}>
           <Ionicons name="person" size={60} color="#ccc" />
         </View>
-        <Text style={styles.name}>{userData?.firstName} {userData?.lastName}</Text>
-        <Text style={styles.email}>{userData?.email}</Text>
+        <Text style={styles.name}>
+          {loading ? <ActivityIndicator size="small" color="#007AFF" /> : `${userData?.firstName || ''} ${userData?.lastName || ''}`}
+        </Text>
+        <Text style={styles.email}>
+          {loading ? <ActivityIndicator size="small" color="#007AFF" /> : userData?.email || ''}
+        </Text>
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Personal Information</Text>
         <View style={styles.infoItem}>
           <Text style={styles.label}>Full Name</Text>
-          <Text style={styles.value}>{`${userData?.firstName || ''} ${userData?.lastName || ''}`}</Text>
+          <Text style={styles.value}>
+            {loading ? <ActivityIndicator size="small" color="#007AFF" /> : `${userData?.firstName || ''} ${userData?.lastName || ''}`}
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.label}>Email</Text>
-          <Text style={styles.value}>{userData?.email || ''}</Text>
+          <Text style={styles.value}>
+            {loading ? <ActivityIndicator size="small" color="#007AFF" /> : userData?.email || ''}
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.label}>Phone</Text>
-          <Text style={styles.value}>{userData?.phone || ''}</Text>
+          <Text style={styles.value}>
+            {loading ? <ActivityIndicator size="small" color="#007AFF" /> : userData?.phone || ''}
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.label}>Date of Birth</Text>
-          <Text style={styles.value}>{userData?.dateOfBirth || ''}</Text>
+          <Text style={styles.value}>
+            {loading ? <ActivityIndicator size="small" color="#007AFF" /> : userData?.dateOfBirth || ''}
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.label}>Gender</Text>
-          <Text style={styles.value}>{userData?.gender || ''}</Text>
+          <Text style={styles.value}>
+            {loading ? <ActivityIndicator size="small" color="#007AFF" /> : userData?.gender || ''}
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.label}>Nationality</Text>
-          <Text style={styles.value}>{userData?.nationality || ''}</Text>
+          <Text style={styles.value}>
+            {loading ? <ActivityIndicator size="small" color="#007AFF" /> : userData?.nationality || ''}
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.label}>ID Number</Text>
-          <Text style={styles.value}>{userData?.idNumber || ''}</Text>
+          <Text style={styles.value}>
+            {loading ? <ActivityIndicator size="small" color="#007AFF" /> : userData?.idNumber || ''}
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.label}>Blood Type</Text>
-          <Text style={styles.value}>{userData?.bloodType || ''}</Text>
+          <Text style={styles.value}>
+            {loading ? <ActivityIndicator size="small" color="#007AFF" /> : userData?.bloodType || ''}
+          </Text>
         </View>
       </View>
 
