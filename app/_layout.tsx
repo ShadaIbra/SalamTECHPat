@@ -16,6 +16,7 @@ export default function RootLayout() {
             animation: 'slide_from_bottom',
           }} 
         />
+        
         <Stack.Screen 
           name="volunteer/index" 
           options={{
