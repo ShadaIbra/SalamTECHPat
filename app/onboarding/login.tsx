@@ -1,18 +1,29 @@
-import { View, Text, TextInput, StyleSheet, Pressable } from "react-native";
+import { View, Text, TextInput, StyleSheet, Pressable, Alert } from "react-native";
 import { Link, router } from "expo-router";
 import { useState } from "react";
+import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { useUser } from '../utils/userContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { setUserType } = useUser();
 
-  const handleLogin = () => {
-    // Add login logic here
-    router.replace("/tabs/home");
+  const auth = getAuth();
+  console.log("Firebase Auth State:", auth.currentUser);
+
+  const handleLogin = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      setUserType('registered');
+      router.replace("/tabs/home");
+    } catch (error: any) {
+      Alert.alert("Login Error", error.message);
+    }
   };
 
   const handleGuestLogin = () => {
-    // Add guest login logic here
+    setUserType('guest');
     router.replace("/tabs/home");
   };
 
@@ -43,13 +54,13 @@ export default function Login() {
         </Pressable>
       </View>
 
-      <Pressable style={styles.button} onPress={() => router.replace("/tabs/home")}>
+      <Pressable style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </Pressable>
 
       <Pressable 
         style={[styles.button, styles.guestButton]} 
-        onPress={() => router.replace("/tabs/home")}
+        onPress={handleGuestLogin}
       >
         <Text style={[styles.buttonText, styles.guestButtonText]}>Join as Guest</Text>
       </Pressable>

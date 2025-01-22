@@ -1,9 +1,11 @@
 import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
 import { router, Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useUser } from '../utils/userContext';
 
 export default function Profile() {
-  const isGuest = false; // This should come from your auth state management
+  const { userType } = useUser();
+  const isGuest = userType === 'guest';
 
   if (isGuest) {
     return (
